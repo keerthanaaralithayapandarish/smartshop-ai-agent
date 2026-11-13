@@ -1,0 +1,121 @@
+[
+  {
+    "id": "LAP001",
+    "name": "AsterBook 14",
+    "brand": "Aster",
+    "category": "laptop",
+    "price": 55999,
+    "processor": "Intel Core i5-1235U",
+    "ram_gb": 16,
+    "storage_gb": 512,
+    "graphics": "Integrated Intel Iris Xe",
+    "operating_system": "Windows 11 Home",
+    "display": "14 inch Full HD",
+    "ports": [
+      "USB-A",
+      "USB-C",
+      "HDMI",
+      "3.5mm audio"
+    ],
+    "weight_kg": 1.45,
+    "warranty_years": 1,
+    "description": "Everyday laptop for study, office work and programming.",
+    "manual_files": [
+      "asterbook14_manual.md"
+    ]
+  },
+  {
+    "id": "LAP002",
+    "name": "NovaBook 15",
+    "brand": "Nova",
+    "category": "laptop",
+    "price": 47999,
+    "processor": "AMD Ryzen 5 7530U",
+    "ram_gb": 8,
+    "storage_gb": 512,
+    "graphics": "Integrated Radeon Graphics",
+    "operating_system": "Windows 11 Home",
+    "display": "15.6 inch Full HD",
+    "ports": [
+      "USB-A",
+      "USB-C",
+      "HDMI",
+      "3.5mm audio"
+    ],
+    "weight_kg": 1.68,
+    "warranty_years": 1,
+    "description": "Budget laptop for study, browsing and everyday productivity.",
+    "manual_files": [
+      "novabook15_manual.md"
+    ]
+  },
+  {
+    "id": "LAP003",
+    "name": "Orion Pro 15",
+    "brand": "Orion",
+    "category": "laptop",
+    "price": 64999,
+    "processor": "Intel Core i7-13620H",
+    "ram_gb": 16,
+    "storage_gb": 1024,
+    "graphics": "NVIDIA GeForce RTX 4050",
+    "operating_system": "Windows 11 Home",
+    "display": "15.6 inch Full HD 144Hz",
+    "ports": [
+      "USB-A",
+      "USB-C",
+      "HDMI",
+      "3.5mm audio"
+    ],
+    "weight_kg": 2.15,
+    "warranty_years": 2,
+    "description": "Higher-performance laptop for demanding development and creative workloads.",
+    "manual_files": [
+      "orionpro15_manual.md"
+    ]
+  },
+  {
+    "id": "LAP004",
+    "name": "ZenLite 14",
+    "brand": "Zen",
+    "category": "laptop",
+    "price": 52999,
+    "processor": "AMD Ryzen 7 7730U",
+    "ram_gb": 16,
+    "storage_gb": 512,
+    "graphics": "Integrated Radeon Graphics",
+    "operating_system": "Windows 11 Home",
+    "display": "14 inch Full HD",
+    "ports": [
+      "USB-A",
+      "USB-C",
+      "HDMI",
+      "3.5mm audio"
+    ],
+    "weight_kg": 1.38,
+    "warranty_years": 1,
+    "description": "Lightweight laptop for students and mobile productivity.",
+    "manual_files": []
+  },
+  {
+    "id": "MON001",
+    "name": "ViewPoint 24 Monitor",
+    "brand": "ViewPoint",
+    "category": "monitor",
+    "price": 11999,
+    "processor": null,
+    "ram_gb": null,
+    "storage_gb": null,
+    "graphics": null,
+    "operating_system": null,
+    "display": "24 inch Full HD IPS",
+    "ports": [
+      "HDMI",
+      "DisplayPort"
+    ],
+    "weight_kg": 3.2,
+    "warranty_years": 3,
+    "description": "External monitor with HDMI and DisplayPort inputs.",
+    "manual_files": []
+  }
+]
