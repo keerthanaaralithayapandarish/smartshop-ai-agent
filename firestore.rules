@@ -1,0 +1,94 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        getUserData().role == 'admin' ||
+        request.auth.token.role == 'admin'
+      );
+    }
+
+    function isPharmacyOwner() {
+      return isAuthenticated() && (
+        getUserData().role == 'pharmacy_owner' ||
+        isAdmin()
+      );
+    }
+
+    function isOwnerOfPharmacy(pharmacyId) {
+      return isAuthenticated() && (
+        get(/databases/$(database)/documents/pharmacies/$(pharmacyId)).data.ownerId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // Anyone logged in can read user profile, or user can read their own
+      allow read: if isAuthenticated();
+      // Users can only create and update their own document, admins can modify any
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Pharmacies collection
+    match /pharmacies/{pharmacyId} {
+      // Anyone can read verified pharmacies; owners can read their own unverified pharmacy; admins can read all
+      allow read: if resource.data.verified == true || 
+                     (isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin()));
+      
+      // Registered pharmacy owners can create a new pharmacy (initially unverified)
+      allow create: if isAuthenticated() && (
+        request.resource.data.ownerId == request.auth.uid &&
+        (request.resource.data.verified == false || isAdmin())
+      );
+
+      // Only the pharmacy owner can update details, but cannot verify themselves; Admins can update any field (including verification)
+      allow update: if isAuthenticated() && (
+        isAdmin() || 
+        (resource.data.ownerId == request.auth.uid && request.resource.data.verified == resource.data.verified)
+      );
+
+      // Only owner or admin can delete
+      allow delete: if isAuthenticated() && (
+        resource.data.ownerId == request.auth.uid || 
+        isAdmin()
+      );
+    }
+
+    // Medicines collection
+    match /medicines/{medicineId} {
+      // Public read: users search and check medicine availability across verified pharmacies
+      allow read: if true;
+
+      // Only the owner of the pharmacy associated with this medicine can create it, or an admin
+      allow create: if isAuthenticated() && (
+        isAdmin() || 
+        isOwnerOfPharmacy(request.resource.data.pharmacyId)
+      );
+
+      // Only the owner of the pharmacy associated with this medicine can update it, or an admin
+      allow update: if isAuthenticated() && (
+        isAdmin() || 
+        isOwnerOfPharmacy(resource.data.pharmacyId)
+      );
+
+      // Only the owner or admin can delete
+      allow delete: if isAuthenticated() && (
+        isAdmin() || 
+        isOwnerOfPharmacy(resource.data.pharmacyId)
+      );
+    }
+  }
+}
