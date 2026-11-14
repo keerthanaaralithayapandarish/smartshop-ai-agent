@@ -62,15 +62,13 @@ export function Navbar() {
             <span className="hidden md:inline-flex items-center gap-1.5 text-electric-300">
               <Zap className="w-3.5 h-3.5 text-electric-400 fill-electric-400" />
               Live Multi-Store Price Comparison Engine
-            </span>
-            <div className="mx-auto md:mx-0 flex items-center gap-2">
-              <span className="opacity-90">Comparing Amazon, Flipkart, Croma & Local Retailers in Real-Time</span>
-              <span className="inline-block px-1.5 py-0.2 rounded bg-electric-500/30 text-electric-300 font-bold text-[10px]">DEMO READY</span>
-            </div>
-            <span className="hidden lg:inline-block text-slate-300">
-              Bangalore • Mumbai • Delhi NCR
-            </span>
-          </div>
+              </span>
+              <div className="mx-auto md:mx-0 flex items-center gap-2">
+                <span className="opacity-90">
+                  Comparing Amazon, Flipkart, Croma & Local Retailers in Real-Time
+                  </span>
+                  </div>
+              </div>
         </div>
 
         {/* Main Navbar */}
