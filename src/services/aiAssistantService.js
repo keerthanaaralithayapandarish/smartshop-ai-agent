@@ -9,6 +9,44 @@ import { getCatalogProducts } from './productService';
 import { getNearbyStoresForProduct } from './storeService';
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+const BACKEND_URL = import.meta.env.VITE_API_URL;
+let sessionId = null;
+async function callBackend(userQuery) {
+  if (!BACKEND_URL) {
+    throw new Error('Backend URL is not configured');
+  }
+
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+  }
+
+  const response = await fetch(`${BACKEND_URL}/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: userQuery,
+      session_id: sessionId
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Backend error: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  return {
+    text: data.reply,
+    recommendedProducts: data.products || [],
+    suggestedQuestions: [
+      'Compare these products',
+      'Suggest another product',
+      'Find a product within my budget'
+    ]
+  };
+}
 
 /**
  * Send user query to AI Assistant
@@ -16,25 +54,51 @@ const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
  * @param {Array} chatHistory
  * @returns {Promise<{text: string, recommendedProducts: Array, suggestedQuestions: Array}>}
  */
+
 export async function queryAIAssistant(userQuery, chatHistory = []) {
-  // If user provided a Gemini API Key in .env, call real Gemini API with product context
+  // 1. Try the Render backend first
+  try {
+    const backendResult = await callBackend(userQuery);
+
+    return {
+      text: backendResult.text,
+      recommendedProducts: [],
+      suggestedQuestions: [
+        'Compare these products',
+        'Suggest another product',
+        'Find a product within my budget'
+      ]
+    };
+  } catch (err) {
+    console.warn(
+      'Backend request failed, trying existing AI engines:',
+      err
+    );
+  }
+
+  // 2. Fallback to Gemini API
   if (GEMINI_API_KEY) {
     try {
       const geminiResult = await callGeminiAPI(userQuery, chatHistory);
       if (geminiResult) return geminiResult;
     } catch (err) {
-      console.warn('Gemini API call failed, falling back to local AI engine:', err);
+      console.warn(
+        'Gemini API call failed, falling back to local AI engine:',
+        err
+      );
     }
   }
 
-  // Fallback: SmartShop Local AI Engine with semantic matching & rich catalog analysis
+  // 3. Final fallback: Local AI engine
   return new Promise((resolve) => {
     setTimeout(() => {
       const response = processLocalAIQuery(userQuery);
       resolve(response);
-    }, 600); // realistic AI reasoning delay
+    }, 600);
   });
 }
+
+
 
 /**
  * Local AI Query Processor
